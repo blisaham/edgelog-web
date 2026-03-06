@@ -22,7 +22,7 @@ export default function NewTradePage() {
     <div className="space-y-4">
 
       <Link href="/">
-        <Button variant="outline">
+        <Button variant="secondary">
           ← Back
         </Button>
       </Link>
