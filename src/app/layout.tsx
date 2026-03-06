@@ -18,11 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 flex justify-center">
+      <body className="bg-gray-50 md:flex md:justify-center">
 
         <Providers>
 
-          <main className="w-full max-w-[430px] min-h-screen sm:px-4">
+          <main className="w-full min-h-screen md:max-w-[430px]">
 
             <AppShell>
               {children}
