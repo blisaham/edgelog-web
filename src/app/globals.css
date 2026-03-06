@@ -5,3 +5,10 @@
 body {
   font-family: system-ui, sans-serif;
 }
+
+/* Mobile typography scaling */
+@media (max-width: 640px) {
+  html {
+    font-size: 22px;
+  }
+}

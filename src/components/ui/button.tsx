@@ -15,7 +15,7 @@ export function Button({
 }: ButtonProps) {
 
   const base =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors px-4 py-3 sm:py-2 text-lg sm:text-base"
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors px-4 py-3 sm:px-4 sm:py-2 text-xl sm:text-base"
 
   const styles =
     variant === "secondary"
