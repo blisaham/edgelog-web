@@ -1,4 +1,5 @@
 import "./globals.css"
+import AppShell from "@/components/app-shell"
 
 export const metadata = {
   title: "EdgeLog",
@@ -17,9 +18,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50 flex justify-center">
-        <main className="w-full max-w-md p-4">
-          {children}
+
+        <main className="w-full max-w-md min-h-screen">
+
+          <AppShell>
+            {children}
+          </AppShell>
+
         </main>
+
       </body>
     </html>
   )
