@@ -1,68 +1,108 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
+
+import MonthTimeline from "@/components/month-timeline"
+import SummaryCards from "@/components/summary-cards"
+
 import { getAllTrades } from "@/lib/db/trades"
 import { getBlogPosts } from "@/lib/db/blog"
 import { getSettings } from "@/lib/db/settings"
-import SummaryCards from "@/components/summary-cards"
-import MonthTimeline from "@/components/month-timeline"
 
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+import { Trade, BlogPost } from "@/types"
 
-export default async function HomePage() {
+export default function HomePage() {
 
-  const trades = await getAllTrades()
-  const posts = await getBlogPosts()
-  const settings = await getSettings()
+  const { data: session } = useSession()
 
-  const openTrades = trades.filter((t) => !t.closed_at).length
+  const [trades, setTrades] = useState<Trade[]>([])
+  const [posts, setPosts] = useState<BlogPost[]>([])
 
-  const goodTrades = trades.filter(
-    (t) =>
-      t.classification === "good_profit" ||
-      t.classification === "good_loss"
-  ).length
+  const [openTrades, setOpenTrades] = useState(0)
+  const [goodTrades, setGoodTrades] = useState(0)
+  const [ytdGrowth, setYtdGrowth] = useState(0)
+  const [lastUpdate, setLastUpdate] = useState("")
 
-  let growth = 0
+  useEffect(() => {
 
-  if (settings?.starting_balance && settings?.last_balance) {
+    async function loadData() {
 
-    growth =
-      ((settings.last_balance - settings.starting_balance) /
-        settings.starting_balance) *
-      100
-  }
+      const t = await getAllTrades()
+      const p = await getBlogPosts()
+      const settings = await getSettings()
 
-  const lastUpdate =
-    trades.length > 0
-      ? new Date(trades[0].opened_at).toISOString().slice(0, 10)
-      : "--"
+      const tradesData = t || []
+      const postsData = p || []
+
+      setTrades(tradesData)
+      setPosts(postsData)
+
+      const open = tradesData.filter(trade => !trade.closed_at).length
+
+      const good = tradesData.filter(trade =>
+        trade.classification === "good_profit" ||
+        trade.classification === "good_loss"
+      ).length
+
+      setOpenTrades(open)
+      setGoodTrades(good)
+
+      if (settings) {
+
+        const start = settings.starting_balance || 0
+        const last = settings.last_balance || 0
+
+        if (start > 0) {
+          const growth = ((last - start) / start) * 100
+          setYtdGrowth(Number(growth.toFixed(2)))
+        }
+
+        if (settings.updated_at) {
+          setLastUpdate(settings.updated_at.slice(0, 10))
+        }
+
+      }
+
+    }
+
+    loadData()
+
+  }, [])
 
   return (
+
     <div className="space-y-6">
 
       <SummaryCards
         openTrades={openTrades}
         goodTrades={goodTrades}
-        ytdGrowth={Number(growth.toFixed(2))}
+        ytdGrowth={ytdGrowth}
         lastUpdate={lastUpdate}
       />
 
-      <div className="flex gap-3">
+      {session && (
 
-        <a
-          href="/trades/new"
-          className="flex-1 bg-black text-white text-center py-3 rounded-md"
-        >
-          New Trade
-        </a>
+        <div className="flex gap-4">
 
-        <a
-          href="/blog/new"
-          className="flex-1 bg-blue-600 text-white text-center py-3 rounded-md"
-        >
-          New Blog
-        </a>
+          <Link
+            href="/trades/new"
+            className="flex-1 text-center bg-black text-white py-3 rounded-md"
+          >
+            New Trade
+          </Link>
 
-      </div>
+          <Link
+            href="/blog/new"
+            className="flex-1 text-center bg-blue-600 text-white py-3 rounded-md"
+          >
+            New Blog
+          </Link>
+
+        </div>
+
+      )}
 
       <MonthTimeline
         trades={trades}
@@ -70,5 +110,6 @@ export default async function HomePage() {
       />
 
     </div>
+
   )
 }

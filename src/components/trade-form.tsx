@@ -1,56 +1,50 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+
+import { createTrade } from "@/lib/db/trades"
+
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
 
-interface Props {
-  onSubmit: (data: {
-    ticker: string
-    edge: string
-    open_chart_url: string
-  }) => Promise<void>
-}
+import {
+  AlertDialog,
+  AlertDialogContent
+} from "@/components/ui/alert-dialog"
 
-export default function TradeForm({ onSubmit }: Props) {
+export default function TradeForm() {
+
+  const router = useRouter()
 
   const [ticker, setTicker] = useState("")
   const [edge, setEdge] = useState("")
-  const [url, setUrl] = useState("")
-  const [saving, setSaving] = useState(false)
+  const [openChart, setOpenChart] = useState("")
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  const [savedDialog, setSavedDialog] = useState(false)
 
-    if (!url) {
-      alert("Open chart URL required")
-      return
-    }
+  async function handleSave() {
 
-    try {
-      setSaving(true)
+    if (!ticker || !openChart) return
 
-      await onSubmit({
-        ticker,
-        edge,
-        open_chart_url: url
-      })
+    await createTrade({
+      ticker,
+      edge,
+      open_chart_url: openChart
+    })
 
-      alert("Trade saved")
+    setSavedDialog(true)
+  }
 
-      setTicker("")
-      setEdge("")
-      setUrl("")
-    } catch {
-      alert("Failed to save trade")
-    } finally {
-      setSaving(false)
-    }
+  function closeDialog() {
+    setSavedDialog(false)
+    router.push("/")
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+
+    <div className="space-y-4">
 
       <Input
         placeholder="Ticker"
@@ -59,29 +53,44 @@ export default function TradeForm({ onSubmit }: Props) {
       />
 
       <Textarea
-        placeholder="Edge & entry tactic"
+        placeholder="Edge / Entry tactic"
         value={edge}
         onChange={(e) => setEdge(e.target.value)}
       />
 
       <Input
-        placeholder="Open chart URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
+        placeholder="Open chart history URL"
+        value={openChart}
+        onChange={(e) => setOpenChart(e.target.value)}
       />
 
-      <div className="flex gap-3">
+      <Button
+        onClick={handleSave}
+        className="w-full"
+      >
+        Save
+      </Button>
 
-        <Button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save"}
-        </Button>
+      <AlertDialog open={savedDialog}>
 
-        <Button type="reset" variant="secondary">
-          Reset
-        </Button>
+        <AlertDialogContent>
 
-      </div>
+          <div className="text-lg font-semibold">
+            Trade saved
+          </div>
 
-    </form>
+          <div className="flex justify-end mt-4">
+
+            <Button onClick={closeDialog}>
+              OK
+            </Button>
+
+          </div>
+
+        </AlertDialogContent>
+
+      </AlertDialog>
+
+    </div>
   )
 }

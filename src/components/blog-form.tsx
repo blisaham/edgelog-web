@@ -1,47 +1,51 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+
+import { createBlogPost } from "@/lib/db/blog"
+
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
 
-interface Props {
-  onSubmit: (data: {
-    title: string
-    content: string
-  }) => Promise<void>
-}
+import {
+  AlertDialog,
+  AlertDialogContent
+} from "@/components/ui/alert-dialog"
 
-export default function BlogForm({ onSubmit }: Props) {
+export default function BlogForm() {
+
+  const router = useRouter()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [saving, setSaving] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  const [savedDialog, setSavedDialog] = useState(false)
 
-    try {
-      setSaving(true)
+  async function handleSave() {
 
-      await onSubmit({
-        title,
-        content
-      })
+    if (!title) return
 
-      alert("Blog saved")
+    await createBlogPost({
+      title,
+      content
+    })
 
-      setTitle("")
-      setContent("")
-    } catch {
-      alert("Failed to save blog")
-    } finally {
-      setSaving(false)
-    }
+    setSavedDialog(true)
+
+  }
+
+  function closeDialog() {
+
+    setSavedDialog(false)
+    router.push("/")
+
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+
+    <div className="space-y-4">
 
       <Input
         placeholder="Title"
@@ -51,23 +55,38 @@ export default function BlogForm({ onSubmit }: Props) {
 
       <Textarea
         placeholder="Content"
-        rows={8}
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
 
-      <div className="flex gap-3">
+      <Button
+        onClick={handleSave}
+        className="w-full"
+      >
+        Save
+      </Button>
 
-        <Button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save"}
-        </Button>
+      <AlertDialog open={savedDialog}>
 
-        <Button type="reset" variant="secondary">
-          Reset
-        </Button>
+        <AlertDialogContent>
 
-      </div>
+          <div className="text-lg font-semibold">
+            Blog saved
+          </div>
 
-    </form>
+          <div className="flex justify-end mt-4">
+
+            <Button onClick={closeDialog}>
+              OK
+            </Button>
+
+          </div>
+
+        </AlertDialogContent>
+
+      </AlertDialog>
+
+    </div>
+
   )
 }
