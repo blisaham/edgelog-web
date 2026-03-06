@@ -18,8 +18,8 @@ export default function SummaryCards({
 
       <Card>
         <CardContent>
-          <p className="text-sm text-gray-500">Open trades</p>
-          <p className="text-[28px] sm:text-xl font-semibold leading-none">
+          <p className="text-base sm:text-sm text-gray-500">Open trades</p>
+          <p className="text-[34px] sm:text-xl font-semibold leading-none">
             {openTrades}
           </p>
         </CardContent>
@@ -27,8 +27,8 @@ export default function SummaryCards({
 
       <Card>
         <CardContent>
-          <p className="text-sm text-gray-500">Good trades</p>
-          <p className="text-[28px] sm:text-xl font-semibold leading-none">
+          <p className="text-base sm:text-sm text-gray-500">Good trades</p>
+          <p className="text-[34px] sm:text-xl font-semibold leading-none">
             {goodTrades}
           </p>
         </CardContent>
@@ -37,17 +37,17 @@ export default function SummaryCards({
       <Card className="col-span-2">
         <CardContent className="flex justify-between items-start">
 
-          <div className="text-base sm:text-sm font-medium">
+          <div className="text-lg sm:text-sm font-medium">
             Growth :
           </div>
 
           <div className="text-right">
 
-            <div className="text-[28px] sm:text-xl font-semibold leading-none">
+            <div className="text-[34px] sm:text-xl font-semibold leading-none">
               {ytdGrowth} %
             </div>
 
-            <div className="text-sm sm:text-xs text-gray-500 mt-1">
+            <div className="text-base sm:text-xs text-gray-500 mt-1">
               {lastUpdate}
             </div>
 
