@@ -20,7 +20,7 @@ function tradeStatus(trade: Trade) {
 
   if (!trade.closed_at) {
     return (
-      <span className="text-xs text-gray-500">
+      <span className="text-sm sm:text-xs text-gray-500">
         ⏳ Open
       </span>
     )
@@ -38,7 +38,7 @@ function tradeStatus(trade: Trade) {
 
   return (
     <span
-      className={`text-xs font-medium ${
+      className={`text-sm sm:text-xs font-medium ${
         good ? "text-green-600" : "text-red-600"
       }`}
     >
@@ -129,14 +129,14 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
   if (!months.length) {
     return (
-      <div className="text-sm text-gray-500">
+      <div className="text-base sm:text-sm text-gray-500">
         No entries yet
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
 
       {months.map((month) => {
 
@@ -151,22 +151,22 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
             <button
               onClick={() => toggleMonth(month)}
-              className="w-full flex justify-between items-center font-semibold"
+              className="w-full flex justify-between items-center text-xl sm:text-lg font-semibold"
             >
               <span>{month}</span>
 
-              <span className="text-sm">
+              <span className="text-lg sm:text-sm">
                 {open ? "−" : "+"}
               </span>
             </button>
 
-            {/* DASHED DIVIDER */}
+            {/* DIVIDER */}
 
-            <div className="mt-1 border-t border-dashed border-gray-300" />
+            <div className="mt-2 border-t border-dashed border-gray-300" />
 
             {open && (
 
-              <div className="mt-3 ml-4 space-y-2">
+              <div className="mt-3 ml-4 space-y-3 sm:space-y-2">
 
                 {/* BLOG POSTS */}
 
@@ -176,7 +176,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     <button
                       onClick={() => toggleSection(month + "blog")}
-                      className="w-full flex justify-between text-sm"
+                      className="w-full flex justify-between text-lg sm:text-sm"
                     >
                       <span className="flex items-center gap-2">
                         <span>•</span>
@@ -191,7 +191,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     {sections[month + "blog"] && (
 
-                      <div className="mt-1 ml-5 space-y-1 text-sm">
+                      <div className="mt-2 ml-5 space-y-2 sm:space-y-1 text-lg sm:text-sm">
 
                         {g.posts.map((post: BlogPost) => (
 
@@ -221,7 +221,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     <button
                       onClick={() => toggleSection(month + "open")}
-                      className="w-full flex justify-between text-sm"
+                      className="w-full flex justify-between text-lg sm:text-sm"
                     >
 
                       <span className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     {sections[month + "open"] && (
 
-                      <div className="mt-1 ml-5 space-y-1 text-sm">
+                      <div className="mt-2 ml-5 space-y-2 sm:space-y-1 text-lg sm:text-sm">
 
                         {g.open.map((trade: Trade) => (
 
@@ -273,7 +273,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     <button
                       onClick={() => toggleSection(month + "closed")}
-                      className="w-full flex justify-between text-sm"
+                      className="w-full flex justify-between text-lg sm:text-sm"
                     >
 
                       <span className="flex items-center gap-2">
@@ -289,7 +289,7 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
                     {sections[month + "closed"] && (
 
-                      <div className="mt-1 ml-5 space-y-1 text-sm">
+                      <div className="mt-2 ml-5 space-y-2 sm:space-y-1 text-lg sm:text-sm">
 
                         {g.closed.map((trade: Trade) => (
 
