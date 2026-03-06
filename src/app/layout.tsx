@@ -1,30 +1,25 @@
 import "./globals.css"
-import type { Metadata } from "next"
-import AppShell from "@/components/app-shell"
-import AuthProvider from "@/components/session-provider"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "EdgeLog",
-  description: "Minimal trading journal"
+}
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      <body>
-
-        <AuthProvider>
-
-          <AppShell>
-            {children}
-          </AppShell>
-
-        </AuthProvider>
-
+      <body className="bg-gray-50 flex justify-center">
+        <main className="w-full max-w-md p-4">
+          {children}
+        </main>
       </body>
     </html>
   )
