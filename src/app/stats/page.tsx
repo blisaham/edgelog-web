@@ -48,9 +48,7 @@ export default async function StatsPage() {
 
       <BackButton />
 
-      <h1 className="text-lg font-semibold">
-        Stats
-      </h1>
+
 
       <GrowthCard
         ytdGrowth={Number(growth.toFixed(2))}
