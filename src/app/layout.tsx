@@ -22,7 +22,7 @@ export default function RootLayout({
 
         <Providers>
 
-          <main className="w-full max-w-[430px] min-h-screen px-4">
+          <main className="w-full max-w-[430px] min-h-screen sm:px-4">
 
             <AppShell>
               {children}
