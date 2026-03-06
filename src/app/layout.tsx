@@ -1,5 +1,6 @@
 import "./globals.css"
 import AppShell from "@/components/app-shell"
+import Providers from "@/components/providers"
 
 export const metadata = {
   title: "EdgeLog",
@@ -19,13 +20,17 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-50 flex justify-center">
 
-        <main className="w-full max-w-md min-h-screen">
+        <Providers>
 
-          <AppShell>
-            {children}
-          </AppShell>
+          <main className="w-full max-w-md min-h-screen">
 
-        </main>
+            <AppShell>
+              {children}
+            </AppShell>
+
+          </main>
+
+        </Providers>
 
       </body>
     </html>
