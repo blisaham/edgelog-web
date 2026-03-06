@@ -3,7 +3,7 @@ import Header from "@/components/header"
 
 export default function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="max-w-xl mx-auto">
+    <div>
       <Header />
       {children}
     </div>
