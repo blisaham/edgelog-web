@@ -1,8 +1,7 @@
-import { NextAuthOptions } from "next-auth"
+import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 
-export const authOptions: NextAuthOptions = {
-
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -10,13 +9,22 @@ export const authOptions: NextAuthOptions = {
     })
   ],
 
-  pages: {
-    signIn: "/login"
-  },
+  callbacks: {
 
-  session: {
-    strategy: "jwt"
+    async signIn({ profile }: any) {
+
+      const allowedEmail = "arifw.affandi@gmail.com"
+
+      if (profile?.email === allowedEmail) {
+        return true
+      }
+
+      return false
+    }
+
   },
 
   secret: process.env.NEXTAUTH_SECRET
 }
+
+export default NextAuth(authOptions)
