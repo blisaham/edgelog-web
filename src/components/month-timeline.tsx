@@ -147,9 +147,11 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
           <div key={month}>
 
+            {/* MONTH HEADER */}
+
             <button
               onClick={() => toggleMonth(month)}
-              className="w-full flex justify-between items-center font-semibold text-[20px] md:text-lg"
+              className="w-full flex justify-between items-center font-semibold text-[20px]"
             >
               <span>{month}</span>
 
@@ -162,19 +164,156 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
             {open && (
 
-              <div className="mt-3 ml-4 space-y-1">
+              <div className="mt-3 ml-4 space-y-2">
 
-                {g.posts.map((post: BlogPost) => (
+                {/* BLOG POSTS */}
 
-                  <Link
-                    key={post.id}
-                    href={`/blog/${post.id}`}
-                    className="block text-[18px] md:text-sm"
-                  >
-                    {post.created_at.slice(8, 10)} — {post.title}
-                  </Link>
+                {g.posts.length > 0 && (
 
-                ))}
+                  <div>
+
+                    <button
+                      onClick={() => toggleSection(month + "blog")}
+                      className="w-full flex justify-between text-[18px]"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>•</span>
+                        Blog posts ({g.posts.length})
+                      </span>
+
+                      <span>
+                        {sections[month + "blog"] ? "−" : "+"}
+                      </span>
+
+                    </button>
+
+                    {sections[month + "blog"] && (
+
+                      <div className="mt-1 ml-5 space-y-1 text-[18px]">
+
+                        {g.posts.map((post: BlogPost) => (
+
+                          <Link
+                            key={post.id}
+                            href={`/blog/${post.id}`}
+                            className="block"
+                          >
+                            {post.created_at.slice(8, 10)} — {post.title}
+                          </Link>
+
+                        ))}
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                )}
+
+                {/* OPEN TRADES */}
+
+                {g.open.length > 0 && (
+
+                  <div>
+
+                    <button
+                      onClick={() => toggleSection(month + "open")}
+                      className="w-full flex justify-between text-[18px]"
+                    >
+
+                      <span className="flex items-center gap-2">
+                        <span>•</span>
+                        Open trades ({g.open.length})
+                      </span>
+
+                      <span>
+                        {sections[month + "open"] ? "−" : "+"}
+                      </span>
+
+                    </button>
+
+                    {sections[month + "open"] && (
+
+                      <div className="mt-1 ml-5 space-y-1 text-[18px]">
+
+                        {g.open.map((trade: Trade) => (
+
+                          <Link
+                            key={trade.id}
+                            href={`/trades/${trade.id}`}
+                            className="flex justify-between"
+                          >
+
+                            <span>
+                              {trade.opened_at.slice(8, 10)} — {trade.ticker}
+                            </span>
+
+                            {tradeStatus(trade)}
+
+                          </Link>
+
+                        ))}
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                )}
+
+                {/* CLOSED TRADES */}
+
+                {g.closed.length > 0 && (
+
+                  <div>
+
+                    <button
+                      onClick={() => toggleSection(month + "closed")}
+                      className="w-full flex justify-between text-[18px]"
+                    >
+
+                      <span className="flex items-center gap-2">
+                        <span>•</span>
+                        Closed trades ({g.closed.length})
+                      </span>
+
+                      <span>
+                        {sections[month + "closed"] ? "−" : "+"}
+                      </span>
+
+                    </button>
+
+                    {sections[month + "closed"] && (
+
+                      <div className="mt-1 ml-5 space-y-1 text-[18px]">
+
+                        {g.closed.map((trade: Trade) => (
+
+                          <Link
+                            key={trade.id}
+                            href={`/trades/${trade.id}`}
+                            className="flex justify-between"
+                          >
+
+                            <span>
+                              {(trade.closed_at || "").slice(8, 10)} — {trade.ticker}
+                            </span>
+
+                            {tradeStatus(trade)}
+
+                          </Link>
+
+                        ))}
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                )}
 
               </div>
 
