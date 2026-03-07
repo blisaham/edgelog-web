@@ -21,11 +21,23 @@ export default function BlogDetailPage({ params }: any) {
 
     async function load() {
 
-      const { data } = await supabase
+      const id = params?.id
+
+      if (!id) {
+        console.error("Missing blog id")
+        return
+      }
+
+      const { data, error } = await supabase
         .from("blogposts")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", id)
         .single()
+
+      if (error) {
+        console.error(error)
+        return
+      }
 
       if (data) {
         setTitle(data.title)
@@ -36,27 +48,52 @@ export default function BlogDetailPage({ params }: any) {
 
     load()
 
-  }, [params.id])
+  }, [params])
 
   async function remove() {
 
-    await supabase
+    const id = params?.id
+
+    if (!id) {
+      console.error("Missing blog id")
+      return
+    }
+
+    const { error } = await supabase
       .from("blogposts")
       .delete()
-      .eq("id", params.id)
+      .eq("id", id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
 
     window.location.href = "/"
+
   }
 
   async function save() {
 
-    await supabase
+    const id = params?.id
+
+    if (!id) {
+      console.error("Missing blog id")
+      return
+    }
+
+    const { error } = await supabase
       .from("blogposts")
       .update({
         title,
         content
       })
-      .eq("id", params.id)
+      .eq("id", id)
+
+    if (error) {
+      console.error(error)
+    }
+
   }
 
   return (
