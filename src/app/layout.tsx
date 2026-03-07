@@ -4,6 +4,7 @@ import Providers from "@/components/providers"
 
 export const metadata = {
   title: "EdgeLog",
+  manifest: "/manifest.json"
 }
 
 export const viewport = {
