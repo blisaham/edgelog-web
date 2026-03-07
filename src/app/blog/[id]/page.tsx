@@ -16,6 +16,7 @@ export default function BlogDetailPage({ params }: any) {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [deleteDialog, setDeleteDialog] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
 
@@ -36,6 +37,7 @@ export default function BlogDetailPage({ params }: any) {
 
       if (error) {
         console.error(error)
+        alert("Failed to load blog post")
         return
       }
 
@@ -66,6 +68,7 @@ export default function BlogDetailPage({ params }: any) {
 
     if (error) {
       console.error(error)
+      alert("Failed to delete blog")
       return
     }
 
@@ -82,6 +85,8 @@ export default function BlogDetailPage({ params }: any) {
       return
     }
 
+    setSaving(true)
+
     const { error } = await supabase
       .from("blogposts")
       .update({
@@ -90,9 +95,15 @@ export default function BlogDetailPage({ params }: any) {
       })
       .eq("id", id)
 
+    setSaving(false)
+
     if (error) {
       console.error(error)
+      alert("Failed to save blog")
+      return
     }
+
+    alert("Blog saved")
 
   }
 
@@ -118,8 +129,11 @@ export default function BlogDetailPage({ params }: any) {
 
           <div className="flex gap-3">
 
-            <Button onClick={save}>
-              Save
+            <Button
+              onClick={save}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save"}
             </Button>
 
             <Button

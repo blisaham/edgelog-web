@@ -20,47 +20,97 @@ export default function TradeDetailPage({ params }: any) {
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [closeDialog, setCloseDialog] = useState(false)
 
+  const [saving, setSaving] = useState(false)
+
   useEffect(() => {
 
     async function load() {
 
-      const { data } = await supabase
+      const id = params?.id
+
+      if (!id) {
+        console.error("Missing trade id")
+        return
+      }
+
+      const { data, error } = await supabase
         .from("trades")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", id)
         .single()
+
+      if (error) {
+        console.error(error)
+        alert("Failed to load trade")
+        return
+      }
 
       setTrade(data)
     }
 
     load()
 
-  }, [params.id])
+  }, [params])
 
   if (!trade) return null
 
   async function confirmDelete() {
 
-    await supabase
+    const id = params?.id
+
+    if (!id) {
+      console.error("Missing trade id")
+      return
+    }
+
+    const { error } = await supabase
       .from("trades")
       .delete()
-      .eq("id", params.id)
+      .eq("id", id)
+
+    if (error) {
+      console.error(error)
+      alert("Failed to delete trade")
+      return
+    }
 
     window.location.href = "/"
   }
 
   async function confirmCloseTrade() {
 
-    if (!closeUrl || !classification) return
+    const id = params?.id
 
-    await supabase
+    if (!id) {
+      console.error("Missing trade id")
+      return
+    }
+
+    if (!closeUrl || !classification) {
+      alert("Please complete all fields")
+      return
+    }
+
+    setSaving(true)
+
+    const { error } = await supabase
       .from("trades")
       .update({
         close_chart_url: closeUrl,
         closed_at: new Date().toISOString(),
         classification
       })
-      .eq("id", params.id)
+      .eq("id", id)
+
+    setSaving(false)
+
+    if (error) {
+      console.error(error)
+      alert("Failed to close trade")
+      return
+    }
+
+    alert("Trade closed")
 
     window.location.href = "/"
   }
@@ -171,8 +221,9 @@ export default function TradeDetailPage({ params }: any) {
                 <Button
                   onClick={() => setCloseDialog(true)}
                   className="w-full"
+                  disabled={saving}
                 >
-                  Confirm close trade
+                  {saving ? "Saving..." : "Confirm close trade"}
                 </Button>
 
               </div>
@@ -209,8 +260,6 @@ export default function TradeDetailPage({ params }: any) {
         </Button>
 
       )}
-
-      {/* DELETE CONFIRM */}
 
       {deleteDialog && (
 
@@ -249,8 +298,6 @@ export default function TradeDetailPage({ params }: any) {
         </Dialog>
 
       )}
-
-      {/* CLOSE CONFIRM */}
 
       {closeDialog && (
 
