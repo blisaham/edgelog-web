@@ -20,7 +20,7 @@ function tradeStatus(trade: Trade) {
 
   if (!trade.closed_at) {
     return (
-      <span className="text-base md:text-xs text-gray-500">
+      <span className="text-[12px] text-gray-500">
         ⏳ Open
       </span>
     )
@@ -38,7 +38,7 @@ function tradeStatus(trade: Trade) {
 
   return (
     <span
-      className={`text-base md:text-xs font-medium ${
+      className={`text-[12px] font-medium ${
         good ? "text-green-600" : "text-red-600"
       }`}
     >
@@ -129,14 +129,14 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
   if (!months.length) {
     return (
-      <div className="text-base md:text-sm text-gray-500">
+      <div className="text-[16px] text-gray-500">
         No entries yet
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
       {months.map((month) => {
 
@@ -149,11 +149,11 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
             <button
               onClick={() => toggleMonth(month)}
-              className="w-full flex justify-between items-center font-semibold text-2xl md:text-lg"
+              className="w-full flex justify-between items-center font-semibold text-[20px] md:text-lg"
             >
               <span>{month}</span>
 
-              <span className="text-xl md:text-sm">
+              <span className="text-[18px]">
                 {open ? "−" : "+"}
               </span>
             </button>
@@ -162,150 +162,19 @@ export default function MonthTimeline({ trades, posts }: Props) {
 
             {open && (
 
-              <div className="mt-3 ml-4 space-y-3">
+              <div className="mt-3 ml-4 space-y-1">
 
-                {g.posts.length > 0 && (
+                {g.posts.map((post: BlogPost) => (
 
-                  <div>
+                  <Link
+                    key={post.id}
+                    href={`/blog/${post.id}`}
+                    className="block text-[18px] md:text-sm"
+                  >
+                    {post.created_at.slice(8, 10)} — {post.title}
+                  </Link>
 
-                    <button
-                      onClick={() => toggleSection(month + "blog")}
-                      className="w-full flex justify-between text-xl md:text-sm"
-                    >
-                      <span className="flex items-center gap-2">
-                        <span>•</span>
-                        Blog posts ({g.posts.length})
-                      </span>
-
-                      <span>
-                        {sections[month + "blog"] ? "−" : "+"}
-                      </span>
-
-                    </button>
-
-                    {sections[month + "blog"] && (
-
-                      <div className="mt-2 ml-5 space-y-2 text-xl md:text-sm">
-
-                        {g.posts.map((post: BlogPost) => (
-
-                          <Link
-                            key={post.id}
-                            href={`/blog/${post.id}`}
-                            className="block"
-                          >
-                            {post.created_at.slice(8, 10)} — {post.title}
-                          </Link>
-
-                        ))}
-
-                      </div>
-
-                    )}
-
-                  </div>
-
-                )}
-
-                {g.open.length > 0 && (
-
-                  <div>
-
-                    <button
-                      onClick={() => toggleSection(month + "open")}
-                      className="w-full flex justify-between text-xl md:text-sm"
-                    >
-
-                      <span className="flex items-center gap-2">
-                        <span>•</span>
-                        Open trades ({g.open.length})
-                      </span>
-
-                      <span>
-                        {sections[month + "open"] ? "−" : "+"}
-                      </span>
-
-                    </button>
-
-                    {sections[month + "open"] && (
-
-                      <div className="mt-2 ml-5 space-y-2 text-xl md:text-sm">
-
-                        {g.open.map((trade: Trade) => (
-
-                          <Link
-                            key={trade.id}
-                            href={`/trades/${trade.id}`}
-                            className="flex justify-between"
-                          >
-
-                            <span>
-                              {trade.opened_at.slice(8, 10)} — {trade.ticker}
-                            </span>
-
-                            {tradeStatus(trade)}
-
-                          </Link>
-
-                        ))}
-
-                      </div>
-
-                    )}
-
-                  </div>
-
-                )}
-
-                {g.closed.length > 0 && (
-
-                  <div>
-
-                    <button
-                      onClick={() => toggleSection(month + "closed")}
-                      className="w-full flex justify-between text-xl md:text-sm"
-                    >
-
-                      <span className="flex items-center gap-2">
-                        <span>•</span>
-                        Closed trades ({g.closed.length})
-                      </span>
-
-                      <span>
-                        {sections[month + "closed"] ? "−" : "+"}
-                      </span>
-
-                    </button>
-
-                    {sections[month + "closed"] && (
-
-                      <div className="mt-2 ml-5 space-y-2 text-xl md:text-sm">
-
-                        {g.closed.map((trade: Trade) => (
-
-                          <Link
-                            key={trade.id}
-                            href={`/trades/${trade.id}`}
-                            className="flex justify-between"
-                          >
-
-                            <span>
-                              {(trade.closed_at || "").slice(8, 10)} — {trade.ticker}
-                            </span>
-
-                            {tradeStatus(trade)}
-
-                          </Link>
-
-                        ))}
-
-                      </div>
-
-                    )}
-
-                  </div>
-
-                )}
+                ))}
 
               </div>
 

@@ -23,7 +23,7 @@ export function CardContent({
   return (
     <div
       className={cn(
-        "p-3 md:p-4",
+        "p-2 md:p-4",
         className
       )}
       {...props}

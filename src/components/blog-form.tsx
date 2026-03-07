@@ -1,90 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-
-import { createBlogPost } from "@/lib/db/blog"
-
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-
-import {
-  AlertDialog,
-  AlertDialogContent
-} from "@/components/ui/alert-dialog"
 
 export default function BlogForm() {
-
-  const router = useRouter()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
 
-  const [savedDialog, setSavedDialog] = useState(false)
-
-  async function handleSave() {
-
-    if (!title) return
-
-    await createBlogPost({
-      title,
-      content
-    })
-
-    setSavedDialog(true)
-
-  }
-
-  function closeDialog() {
-
-    setSavedDialog(false)
-    router.push("/")
-
-  }
-
   return (
 
-    <div className="space-y-4">
+    <div className="space-y-3">
 
-      <Input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+      <div>
+        <label className="text-[16px] md:text-sm block mb-1">
+          Title
+        </label>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-[20px] md:text-sm"
+        />
+      </div>
 
-      <Textarea
-        placeholder="Content"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+      <div>
+        <label className="text-[16px] md:text-sm block mb-1">
+          Content
+        </label>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-[20px] md:text-sm"
+          rows={4}
+        />
+      </div>
 
-      <Button
-        onClick={handleSave}
-        className="w-full"
-      >
+      <Button>
         Save
       </Button>
-
-      <AlertDialog open={savedDialog}>
-
-        <AlertDialogContent>
-
-          <div className="text-lg font-semibold">
-            Blog saved
-          </div>
-
-          <div className="flex justify-end mt-4">
-
-            <Button onClick={closeDialog}>
-              OK
-            </Button>
-
-          </div>
-
-        </AlertDialogContent>
-
-      </AlertDialog>
 
     </div>
 
