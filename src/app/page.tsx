@@ -10,6 +10,7 @@ import SummaryCards from "@/components/summary-cards"
 import { getAllTrades } from "@/lib/db/trades"
 import { getBlogPosts } from "@/lib/db/blog"
 import { getSettings } from "@/lib/db/settings"
+import { calculateGrowth } from "@/lib/utils"
 
 import { Trade, BlogPost } from "@/types"
 
@@ -51,13 +52,12 @@ export default function HomePage() {
 
       if (settings) {
 
-        const start = settings.starting_balance || 0
-        const last = settings.last_balance || 0
+        const growth = calculateGrowth(
+          settings.starting_balance,
+          settings.last_balance
+        )
 
-        if (start > 0) {
-          const growth = ((last - start) / start) * 100
-          setYtdGrowth(Number(growth.toFixed(2)))
-        }
+        setYtdGrowth(growth)
 
         if (settings.updated_at) {
           setLastUpdate(settings.updated_at.slice(0, 10))

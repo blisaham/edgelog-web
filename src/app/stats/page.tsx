@@ -1,5 +1,10 @@
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 import { getAllTrades } from "@/lib/db/trades"
 import { getSettings } from "@/lib/db/settings"
+import { calculateGrowth } from "@/lib/utils"
+
 import BackButton from "@/components/back-button"
 import GrowthCard from "@/components/growth-card"
 import { Card, CardContent } from "@/components/ui/card"
@@ -30,12 +35,10 @@ export default async function StatsPage() {
 
   if (settings) {
 
-    const start = settings.starting_balance || 0
-    const last = settings.last_balance || 0
-
-    if (start > 0) {
-      growth = ((last - start) / start) * 100
-    }
+    growth = calculateGrowth(
+      settings.starting_balance,
+      settings.last_balance
+    )
 
     if (settings.updated_at) {
       lastUpdate = settings.updated_at.slice(0, 10)
@@ -48,10 +51,8 @@ export default async function StatsPage() {
 
       <BackButton />
 
-
-
       <GrowthCard
-        ytdGrowth={Number(growth.toFixed(2))}
+        ytdGrowth={growth}
         lastUpdate={lastUpdate}
       />
 
