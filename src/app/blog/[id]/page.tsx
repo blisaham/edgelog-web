@@ -17,6 +17,7 @@ export default function BlogDetailPage({ params }: any) {
   const [content, setContent] = useState("")
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [savedNotice, setSavedNotice] = useState(false)
 
   useEffect(() => {
 
@@ -37,7 +38,6 @@ export default function BlogDetailPage({ params }: any) {
 
       if (error) {
         console.error(error)
-        alert("Failed to load blog post")
         return
       }
 
@@ -68,7 +68,6 @@ export default function BlogDetailPage({ params }: any) {
 
     if (error) {
       console.error(error)
-      alert("Failed to delete blog")
       return
     }
 
@@ -99,11 +98,14 @@ export default function BlogDetailPage({ params }: any) {
 
     if (error) {
       console.error(error)
-      alert("Failed to save blog")
       return
     }
 
-    alert("Blog saved")
+    setSavedNotice(true)
+
+    setTimeout(() => {
+      setSavedNotice(false)
+    }, 2000)
 
   }
 
@@ -127,7 +129,7 @@ export default function BlogDetailPage({ params }: any) {
             onChange={(e) => setContent(e.target.value)}
           />
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
 
             <Button
               onClick={save}
@@ -135,6 +137,12 @@ export default function BlogDetailPage({ params }: any) {
             >
               {saving ? "Saving..." : "Save"}
             </Button>
+
+            {savedNotice && (
+              <span className="text-sm text-green-600">
+                Saved
+              </span>
+            )}
 
             <Button
               onClick={() => setDeleteDialog(true)}

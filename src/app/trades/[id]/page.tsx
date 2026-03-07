@@ -21,6 +21,7 @@ export default function TradeDetailPage({ params }: any) {
   const [closeDialog, setCloseDialog] = useState(false)
 
   const [saving, setSaving] = useState(false)
+  const [savedNotice, setSavedNotice] = useState(false)
 
   useEffect(() => {
 
@@ -41,7 +42,6 @@ export default function TradeDetailPage({ params }: any) {
 
       if (error) {
         console.error(error)
-        alert("Failed to load trade")
         return
       }
 
@@ -70,7 +70,6 @@ export default function TradeDetailPage({ params }: any) {
 
     if (error) {
       console.error(error)
-      alert("Failed to delete trade")
       return
     }
 
@@ -87,7 +86,6 @@ export default function TradeDetailPage({ params }: any) {
     }
 
     if (!closeUrl || !classification) {
-      alert("Please complete all fields")
       return
     }
 
@@ -106,13 +104,16 @@ export default function TradeDetailPage({ params }: any) {
 
     if (error) {
       console.error(error)
-      alert("Failed to close trade")
       return
     }
 
-    alert("Trade closed")
+    setSavedNotice(true)
 
-    window.location.href = "/"
+    setTimeout(() => {
+      setSavedNotice(false)
+      window.location.href = "/"
+    }, 1200)
+
   }
 
   return (
@@ -225,6 +226,12 @@ export default function TradeDetailPage({ params }: any) {
                 >
                   {saving ? "Saving..." : "Confirm close trade"}
                 </Button>
+
+                {savedNotice && (
+                  <span className="text-sm text-green-600">
+                    Saved
+                  </span>
+                )}
 
               </div>
 
