@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react"
 import BackButton from "@/components/back-button"
+import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { signOut } from "next-auth/react"
-
-import { getSettings, saveBalance, saveGA } from "@/lib/db/settings"
 
 export default function SettingsPage() {
 
@@ -20,7 +19,11 @@ export default function SettingsPage() {
 
     async function load() {
 
-      const data = await getSettings()
+      const { data } = await supabase
+        .from("settings")
+        .select("*")
+        .eq("id", "main")
+        .single()
 
       if (data) {
         setStartingBalance(String(data.starting_balance || ""))
@@ -36,19 +39,35 @@ export default function SettingsPage() {
 
   async function saveBalances() {
 
-    await saveBalance(
-      Number(startingBalance),
-      Number(lastBalance)
-    )
+    const { error } = await supabase
+      .from("settings")
+      .update({
+        starting_balance: Number(startingBalance),
+        last_balance: Number(lastBalance),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", "main")
 
-    setDialog("Balances saved")
+    if (!error) {
+      setDialog("Balances saved")
+    }
+
   }
 
-  async function saveAnalytics() {
+  async function saveGA() {
 
-    await saveGA(gaCode)
+    const { error } = await supabase
+      .from("settings")
+      .update({
+        ga_code: gaCode,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", "main")
 
-    setDialog("Google Analytics code saved")
+    if (!error) {
+      setDialog("Google Analytics code saved")
+    }
+
   }
 
   async function logout() {
@@ -64,7 +83,6 @@ export default function SettingsPage() {
   }
 
   return (
-
     <div className="space-y-6">
 
       <BackButton />
@@ -114,7 +132,7 @@ export default function SettingsPage() {
 
         <Button
           className="w-full"
-          onClick={saveAnalytics}
+          onClick={saveGA}
         >
           Save Analytics
         </Button>
@@ -160,6 +178,5 @@ export default function SettingsPage() {
       )}
 
     </div>
-
   )
 }
