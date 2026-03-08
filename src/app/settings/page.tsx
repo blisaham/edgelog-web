@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react"
 import BackButton from "@/components/back-button"
-import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { signOut } from "next-auth/react"
+
+import { getSettings, saveBalance, saveGA } from "@/lib/db/setting"
 
 export default function SettingsPage() {
 
@@ -19,11 +20,7 @@ export default function SettingsPage() {
 
     async function load() {
 
-      const { data } = await supabase
-        .from("settings")
-        .select("*")
-        .eq("id", "main")
-        .single()
+      const data = await getSettings()
 
       if (data) {
         setStartingBalance(String(data.starting_balance || ""))
@@ -39,25 +36,17 @@ export default function SettingsPage() {
 
   async function saveBalances() {
 
-    await supabase
-      .from("settings")
-      .upsert({
-        id: "main",
-        starting_balance: Number(startingBalance),
-        last_balance: Number(lastBalance)
-      })
+    await saveBalance(
+      Number(startingBalance),
+      Number(lastBalance)
+    )
 
     setDialog("Balances saved")
   }
 
-  async function saveGA() {
+  async function saveAnalytics() {
 
-    await supabase
-      .from("settings")
-      .upsert({
-        id: "main",
-        ga_code: gaCode
-      })
+    await saveGA(gaCode)
 
     setDialog("Google Analytics code saved")
   }
@@ -75,6 +64,7 @@ export default function SettingsPage() {
   }
 
   return (
+
     <div className="space-y-6">
 
       <BackButton />
@@ -124,7 +114,7 @@ export default function SettingsPage() {
 
         <Button
           className="w-full"
-          onClick={saveGA}
+          onClick={saveAnalytics}
         >
           Save Analytics
         </Button>
@@ -170,5 +160,6 @@ export default function SettingsPage() {
       )}
 
     </div>
+
   )
 }
