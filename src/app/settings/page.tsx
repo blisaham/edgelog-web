@@ -19,11 +19,16 @@ export default function SettingsPage() {
 
     async function load() {
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("settings")
         .select("*")
         .eq("id", "main")
         .single()
+
+      if (error) {
+        console.error("LOAD SETTINGS ERROR:", error)
+        return
+      }
 
       if (data) {
         setStartingBalance(String(data.starting_balance || ""))
@@ -39,7 +44,7 @@ export default function SettingsPage() {
 
   async function saveBalances() {
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("settings")
       .upsert({
         id: "main",
@@ -47,10 +52,15 @@ export default function SettingsPage() {
         last_balance: Number(lastBalance),
         updated_at: new Date().toISOString()
       })
+      .select()
 
-    if (!error) {
-      setDialog("Balances saved")
+    if (error) {
+      console.error("SAVE BALANCE ERROR:", error)
+      alert("Failed to save balance")
+      return
     }
+
+    setDialog("Balances saved")
 
   }
 
@@ -64,9 +74,13 @@ export default function SettingsPage() {
         updated_at: new Date().toISOString()
       })
 
-    if (!error) {
-      setDialog("Google Analytics code saved")
+    if (error) {
+      console.error("SAVE GA ERROR:", error)
+      alert("Failed to save analytics code")
+      return
     }
+
+    setDialog("Google Analytics code saved")
 
   }
 
