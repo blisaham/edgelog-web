@@ -27,6 +27,7 @@ export default function SettingsPage() {
 
       if (error) {
         console.error("LOAD SETTINGS ERROR:", error)
+        setDialog("Failed to load settings")
         return
       }
 
@@ -44,7 +45,7 @@ export default function SettingsPage() {
 
   async function saveBalances() {
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("settings")
       .upsert({
         id: "main",
@@ -52,11 +53,10 @@ export default function SettingsPage() {
         last_balance: Number(lastBalance),
         updated_at: new Date().toISOString()
       })
-      .select()
 
     if (error) {
       console.error("SAVE BALANCE ERROR:", error)
-      alert("Failed to save balance")
+      setDialog("Failed to save balance")
       return
     }
 
@@ -76,7 +76,7 @@ export default function SettingsPage() {
 
     if (error) {
       console.error("SAVE GA ERROR:", error)
-      alert("Failed to save analytics code")
+      setDialog("Failed to save analytics code")
       return
     }
 
@@ -97,9 +97,12 @@ export default function SettingsPage() {
   }
 
   return (
+
     <div className="space-y-6">
 
       <BackButton />
+
+      {/* BALANCE */}
 
       <div className="space-y-3">
 
@@ -128,6 +131,8 @@ export default function SettingsPage() {
 
       </div>
 
+      {/* GOOGLE ANALYTICS */}
+
       <div className="space-y-3">
 
         <h2 className="text-sm font-semibold">
@@ -149,12 +154,16 @@ export default function SettingsPage() {
 
       </div>
 
+      {/* LOGOUT */}
+
       <Button
         onClick={logout}
         className="w-full bg-red-600 text-white"
       >
         Logout
       </Button>
+
+      {/* DIALOG */}
 
       {dialog && (
 
@@ -184,5 +193,6 @@ export default function SettingsPage() {
       )}
 
     </div>
+
   )
 }
