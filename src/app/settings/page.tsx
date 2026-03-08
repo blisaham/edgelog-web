@@ -41,12 +41,12 @@ export default function SettingsPage() {
 
     const { error } = await supabase
       .from("settings")
-      .update({
+      .upsert({
+        id: "main",
         starting_balance: Number(startingBalance),
         last_balance: Number(lastBalance),
         updated_at: new Date().toISOString()
       })
-      .eq("id", "main")
 
     if (!error) {
       setDialog("Balances saved")
@@ -58,11 +58,11 @@ export default function SettingsPage() {
 
     const { error } = await supabase
       .from("settings")
-      .update({
+      .upsert({
+        id: "main",
         ga_code: gaCode,
         updated_at: new Date().toISOString()
       })
-      .eq("id", "main")
 
     if (!error) {
       setDialog("Google Analytics code saved")
@@ -86,8 +86,6 @@ export default function SettingsPage() {
     <div className="space-y-6">
 
       <BackButton />
-
-      {/* BALANCE */}
 
       <div className="space-y-3">
 
@@ -116,8 +114,6 @@ export default function SettingsPage() {
 
       </div>
 
-      {/* GOOGLE ANALYTICS */}
-
       <div className="space-y-3">
 
         <h2 className="text-sm font-semibold">
@@ -139,16 +135,12 @@ export default function SettingsPage() {
 
       </div>
 
-      {/* LOGOUT */}
-
       <Button
         onClick={logout}
         className="w-full bg-red-600 text-white"
       >
         Logout
       </Button>
-
-      {/* SUCCESS DIALOG */}
 
       {dialog && (
 
