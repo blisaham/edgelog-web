@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { signOut } from "next-auth/react"
 
-import { getSettings, saveBalance, saveGA } from "@/lib/db/setting"
+import { getSettings, saveBalance, saveGA } from "@/lib/db/settings"
 
 export default function SettingsPage() {
 
