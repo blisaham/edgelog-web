@@ -52,6 +52,43 @@ export default function BlogDetailPage({ params }: any) {
 
   }, [params])
 
+  function insertMarkdown(before: string, after: string = "") {
+
+    const textarea = document.getElementById("blog-editor") as HTMLTextAreaElement
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+
+    const selected = content.substring(start, end)
+
+    const newText =
+      content.substring(0, start) +
+      before +
+      selected +
+      after +
+      content.substring(end)
+
+    setContent(newText)
+
+    setTimeout(() => {
+      textarea.focus()
+      textarea.selectionStart = start + before.length
+      textarea.selectionEnd = end + before.length
+    }, 0)
+
+  }
+
+  function autoResize(e: React.ChangeEvent<HTMLTextAreaElement>) {
+
+    const el = e.target
+    el.style.height = "auto"
+    el.style.height = el.scrollHeight + "px"
+
+    setContent(el.value)
+
+  }
+
   async function remove() {
 
     const id = params?.id
@@ -123,10 +160,39 @@ export default function BlogDetailPage({ params }: any) {
             onChange={(e) => setTitle(e.target.value)}
           />
 
+          <div className="flex flex-wrap gap-2">
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("# ")}>
+              H1
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("## ")}>
+              H2
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("**", "**")}>
+              Bold
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("*", "*")}>
+              Italic
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("- ")}>
+              • List
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => insertMarkdown("1. ")}>
+              1. List
+            </Button>
+
+          </div>
+
           <Textarea
+            id="blog-editor"
             rows={8}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={autoResize}
           />
 
           <div className="flex gap-3 items-center">
