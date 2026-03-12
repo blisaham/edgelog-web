@@ -17,9 +17,20 @@ export async function getSectorRadar() {
 
   if (!sectors) return []
 
-  return sectors.map((sector) => ({
+  const order = {
+    "Leading": 1,
+    "Improving": 2,
+    "Weakening": 3,
+    "Lagging": 4
+  }
+
+  const result = sectors.map((sector) => ({
     ...sector,
     signals: signals?.filter(s => s.sector === sector.sector) || []
   }))
+
+  return result.sort((a, b) => {
+    return (order[a.quadrant] ?? 99) - (order[b.quadrant] ?? 99)
+  })
 
 }
