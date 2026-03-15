@@ -7,6 +7,10 @@ const supabase = createClient(
 
 type Quadrant = "Leading" | "Improving" | "Weakening" | "Lagging"
 
+/* -------------------------------------------------------
+   SECTOR RADAR (kept for future use)
+------------------------------------------------------- */
+
 export async function getSectorRadar() {
 
   const { data: sectors } = await supabase
@@ -28,14 +32,34 @@ export async function getSectorRadar() {
 
   const result = sectors.map((sector: any) => ({
     ...sector,
-    signals: signals?.filter(s => s.sector === sector.sector) || []
+    signals: signals?.filter(
+      (s) => s.sector === sector.sector
+    ) || []
   }))
 
   return result.sort((a: any, b: any) => {
+
     const qa = a.quadrant as Quadrant
     const qb = b.quadrant as Quadrant
 
     return (order[qa] ?? 99) - (order[qb] ?? 99)
+
   })
+
+}
+
+/* -------------------------------------------------------
+   TOP SIGNALS
+------------------------------------------------------- */
+
+export async function getTopSignals(limit = 20) {
+
+  const { data } = await supabase
+    .from("signals")
+    .select("ticker, sector, quadrant, signal, date")
+    .order("date", { ascending: false })
+    .limit(limit)
+
+  return data ?? []
 
 }
