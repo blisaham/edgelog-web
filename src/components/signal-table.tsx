@@ -48,6 +48,8 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
 
     <div className="space-y-3 pb-10">
 
+      {/* SEARCH */}
+
       <input
         type="text"
         placeholder="Search ticker or sector..."
@@ -59,18 +61,20 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
         }}
       />
 
-      <div className="border rounded-md overflow-hidden">
+      {/* TABLE CONTAINER (mobile scroll support) */}
 
-        <table className="w-full text-sm">
+      <div className="border rounded-md overflow-x-auto">
+
+        <table className="w-full text-sm min-w-[600px]">
 
           <thead className="bg-muted">
 
             <tr className="text-left">
 
-              <th className="px-3 py-2">Quadrant</th>
               <th className="px-3 py-2">Ticker</th>
-              <th className="px-3 py-2">Sector</th>
               <th className="px-3 py-2">Signal</th>
+              <th className="px-3 py-2">Quadrant</th>
+              <th className="px-3 py-2">Sector</th>
               <th className="px-3 py-2">Date</th>
 
             </tr>
@@ -83,15 +87,28 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
 
               <tr key={s.ticker + s.date} className="border-t">
 
-                <td className="px-3 py-2">{s.quadrant}</td>
+                {/* CLICKABLE TICKER */}
 
                 <td className="px-3 py-2 font-semibold">
-                  {s.ticker}
+
+                  <a
+                    href={`https://www.tradingview.com/chart/?symbol=IDX:${s.ticker}&interval=W`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+
+                    {s.ticker}
+
+                    <span className="text-xs text-muted-foreground">
+                      ↗
+                    </span>
+
+                  </a>
+
                 </td>
 
-                <td className="px-3 py-2 text-muted-foreground">
-                  {s.sector}
-                </td>
+                {/* SIGNAL */}
 
                 <td className="px-3 py-2">
 
@@ -99,6 +116,20 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
                   {s.signal === "REENTRY" && "↻ REENTRY"}
 
                 </td>
+
+                {/* QUADRANT */}
+
+                <td className="px-3 py-2">
+                  {s.quadrant}
+                </td>
+
+                {/* SECTOR */}
+
+                <td className="px-3 py-2 text-muted-foreground">
+                  {s.sector}
+                </td>
+
+                {/* DATE */}
 
                 <td className="px-3 py-2 text-muted-foreground">
                   {s.date}
@@ -113,6 +144,8 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
         </table>
 
       </div>
+
+      {/* PAGINATION */}
 
       {totalPages > 1 && (
 
@@ -143,5 +176,6 @@ export default function SignalTable({ signals }: { signals: Signal[] }) {
       )}
 
     </div>
+
   )
 }
