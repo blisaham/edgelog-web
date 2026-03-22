@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useSession } from "next-auth/react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import ReactMarkdown from "react-markdown" // ✅ added
 
 export default function BlogDetailPage({ params }: any) {
 
@@ -229,9 +230,12 @@ export default function BlogDetailPage({ params }: any) {
             {title}
           </h1>
 
-          <p className="text-sm whitespace-pre-wrap">
-            {content}
-          </p>
+          {/* ✅ Markdown rendered */}
+          <div className="prose prose-sm max-w-none">
+            <ReactMarkdown>
+              {content}
+            </ReactMarkdown>
+          </div>
 
         </div>
 
