@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase"
+import { cache } from "react"
 
-export async function getStatsDashboard(limit = 20) {
+export const getStatsDashboard = cache(async (limit = 20) => {
 
-  // run in parallel (still 1 server request)
   const [tradesRes, settingsRes, signalsRes] = await Promise.all([
 
     supabase
@@ -28,4 +28,5 @@ export async function getStatsDashboard(limit = 20) {
     settings: settingsRes.data || null,
     signals: signalsRes.data || []
   }
-}
+
+})
