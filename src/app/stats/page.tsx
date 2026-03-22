@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
-import { getAllTrades } from "@/lib/db/trades"
+import { getTradesForStats } from "@/lib/db/trades"
 import { getSettings } from "@/lib/db/settings"
 import { getTopSignals } from "@/lib/db/sector"
 import { calculateGrowth } from "@/lib/utils"
@@ -13,7 +13,7 @@ import SignalTable from "@/components/signal-table"
 
 export default async function StatsPage() {
 
-  const trades = await getAllTrades()
+  const trades = await getTradesForStats()
   const settings = await getSettings()
   const signals = await getTopSignals()
 

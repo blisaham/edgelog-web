@@ -8,15 +8,30 @@ const supabase = createClient(
 type Quadrant = "Leading" | "Improving" | "Weakening" | "Lagging"
 
 /* -------------------------------------------------------
-   SECTOR RADAR (kept for future use)
+   SECTOR RADAR (optimized)
 ------------------------------------------------------- */
 
 export async function getSectorRadar() {
 
+  // ✅ get latest date
+  const { data: latestRow } = await supabase
+    .from("sector_rotation")
+    .select("date")
+    .order("date", { ascending: false })
+    .limit(1)
+    .single()
+
+  if (!latestRow) return []
+
+  const latestDate = latestRow.date
+
+  // ✅ fetch only latest sectors
   const { data: sectors } = await supabase
     .from("sector_rotation")
-    .select("*")
+    .select("sector, quadrant")
+    .eq("date", latestDate)
 
+  // ✅ fetch signals (still simple for now)
   const { data: signals } = await supabase
     .from("signals")
     .select("ticker, sector, signal")
@@ -30,26 +45,29 @@ export async function getSectorRadar() {
     Lagging: 4
   }
 
+  // ✅ O(n) grouping instead of filter loop
+  const signalMap: Record<string, any[]> = {}
+
+  signals?.forEach((s) => {
+    if (!signalMap[s.sector]) {
+      signalMap[s.sector] = []
+    }
+    signalMap[s.sector].push(s)
+  })
+
   const result = sectors.map((sector: any) => ({
     ...sector,
-    signals: signals?.filter(
-      (s) => s.sector === sector.sector
-    ) || []
+    signals: signalMap[sector.sector] || []
   }))
 
   return result.sort((a: any, b: any) => {
-
-    const qa = a.quadrant as Quadrant
-    const qb = b.quadrant as Quadrant
-
-    return (order[qa] ?? 99) - (order[qb] ?? 99)
-
+    return (order[a.quadrant as Quadrant] ?? 99) -
+           (order[b.quadrant as Quadrant] ?? 99)
   })
-
 }
 
 /* -------------------------------------------------------
-   TOP SIGNALS
+   TOP SIGNALS (unchanged)
 ------------------------------------------------------- */
 
 export async function getTopSignals(limit = 20) {

@@ -1,10 +1,27 @@
 import { supabase } from "@/lib/supabase"
 
+// 🔹 FULL DATA (used by main page)
 export async function getAllTrades() {
 
   const { data, error } = await supabase
     .from("trades")
     .select("*")
+    .order("opened_at", { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  return data || []
+}
+
+// 🔹 LIGHT DATA (used by stats page)
+export async function getTradesForStats() {
+
+  const { data, error } = await supabase
+    .from("trades")
+    .select("classification")
     .order("opened_at", { ascending: false })
 
   if (error) {
