@@ -1,8 +1,6 @@
 export const revalidate = 60
 
-import { getTradesForStats } from "@/lib/db/trades"
-import { getSettings } from "@/lib/db/settings"
-import { getTopSignals } from "@/lib/db/sector"
+import { getStatsDashboard } from "@/lib/db/dashboard"
 import { calculateGrowth } from "@/lib/utils"
 
 import BackButton from "@/components/back-button"
@@ -12,9 +10,7 @@ import SignalTable from "@/components/signal-table"
 
 export default async function StatsPage() {
 
-  const trades = await getTradesForStats()
-  const settings = await getSettings()
-  const signals = await getTopSignals()
+  const { trades, settings, signals } = await getStatsDashboard()
 
   const goodProfit = trades.filter(
     (t) => t.classification === "good_profit"
