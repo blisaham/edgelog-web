@@ -231,7 +231,7 @@ export default function BlogDetailPage({ params }: any) {
           </h1>
 
           {/* ✅ Markdown rendered */}
-          <div className="prose prose-sm max-w-none">
+          <div className="prose prose-sm max-w-none  text-justify  prose-p:text-justify  prose-li:text-justify">
             <ReactMarkdown>
               {content}
             </ReactMarkdown>
