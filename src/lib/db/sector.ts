@@ -8,6 +8,23 @@ const supabase = createClient(
 type Quadrant = "Leading" | "Improving" | "Weakening" | "Lagging"
 
 /* -------------------------------------------------------
+   HELPER: GET LAST 4 DISTINCT SIGNAL DATES
+------------------------------------------------------- */
+
+async function getLast4SignalDates() {
+  const { data } = await supabase
+    .from("signals")
+    .select("date")
+    .order("date", { ascending: false })
+
+  if (!data) return []
+
+  const uniqueDates = [...new Set(data.map(d => d.date))]
+
+  return uniqueDates.slice(0, 4)
+}
+
+/* -------------------------------------------------------
    SECTOR RADAR (optimized)
 ------------------------------------------------------- */
 
@@ -31,10 +48,13 @@ export async function getSectorRadar() {
     .select("sector, quadrant")
     .eq("date", latestDate)
 
-  // ✅ fetch signals (still simple for now)
+  // ✅ fetch signals (LIMITED TO LAST 4 WEEKS)
+  const dates = await getLast4SignalDates()
+
   const { data: signals } = await supabase
     .from("signals")
     .select("ticker, sector, signal")
+    .in("date", dates)
 
   if (!sectors) return []
 
@@ -45,7 +65,6 @@ export async function getSectorRadar() {
     Lagging: 4
   }
 
-  // ✅ O(n) grouping instead of filter loop
   const signalMap: Record<string, any[]> = {}
 
   signals?.forEach((s) => {
@@ -67,14 +86,18 @@ export async function getSectorRadar() {
 }
 
 /* -------------------------------------------------------
-   TOP SIGNALS (unchanged)
+   TOP SIGNALS (LIMITED TO LAST 4 WEEKS)
 ------------------------------------------------------- */
 
 export async function getTopSignals(limit = 20) {
 
+  const dates = await getLast4SignalDates()
+  if (dates.length === 0) return []
+
   const { data } = await supabase
     .from("signals")
     .select("ticker, sector, quadrant, signal, date")
+    .in("date", dates)
     .order("date", { ascending: false })
     .limit(limit)
 
